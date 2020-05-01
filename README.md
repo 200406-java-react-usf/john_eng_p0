@@ -14,4 +14,4 @@ of shared items in the event
 
 ## ERD
 
-
+https://github.com/200406-java-react-usf/john_eng_p0/blob/master/Event-ERD-John_Eng.png
