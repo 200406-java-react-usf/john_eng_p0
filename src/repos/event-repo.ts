@@ -2,26 +2,28 @@ import { CrudRepository } from './crud-repo';
 import eventData from '../data/event_db';
 import { Event } from '../models/event';
 
+import { PoolClient } from 'pg';
+import { connectionPool } from '..';
+
 export class EventRepository implements CrudRepository<Event>{
 
-	// private static instance: eventRepository;
-	// private constructor(){}
-	// static getInstance(){
-	// 	return !EventRepository.instance ? EventRepository.instance = new EventRepository() : EventRepository.instance;
-	// } 
+	async getAll(): Promise<Event[]> {
 
-	getAll(): Promise<Event[]> {
-
-		return new Promise((resolve,reject)=> {
-
-			let events = [];
-
-			for(let event of eventData){
-				events.push({...event});
-			}
-
-			resolve(events);
-		});
+		let client:PoolClient;
+		try{
+			client = await connectionPool.connect();
+			console.log(client);
+			let sql = 'select * from app_events';
+			let rs = await client.query(sql);
+			console.log(rs);
+			return rs.rows
+		}catch(e){
+			console.log(e);
+			// throw new InternalServerError();
+		}finally{
+			client && client.release;
+		}
+		
 	}
 	getById(id: number): Promise<Event>{
 		return new Promise<Event>((resolve,rejects)=>{

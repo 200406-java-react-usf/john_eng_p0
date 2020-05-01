@@ -3,4 +3,5 @@ package-lock.json
 build/
 coverage/
 */__temp__/
+.env
 
