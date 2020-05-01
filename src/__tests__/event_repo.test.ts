@@ -43,15 +43,16 @@ describe('eventRepo', () => {
 		//Act
 		let result = await sut.getEventById(1);
 		expect(result).toBeTruthy();
-		expect(result.event_id).toBe(1);
+		expect(result[0].event_id).toBe(1);
 	});
 	
 	test('to add new event when save() is called', async () =>{
 		//Arrange
 		expect.assertions(2);
-		EventRepository.prototype.saveEvent = jest.fn().mockReturnValue(mockEvents);
+		let newObj = new Event(1, 'Harry\'s Birthday Party', '123 William Street', new Date(), new Date(), new Date(), 'Have fun', 1);
+		EventRepository.prototype.save = jest.fn().mockReturnValue(newObj);
+	
 		//Act
-		let newObj = new Event(0, 'Harry\'s Birthday Party', '123 William Street', new Date(), new Date(), new Date(), 'Have fun', 1);
 		let result = await sut.saveEvent(newObj);
 		//Assert
 		expect(result).toBeTruthy();
@@ -59,21 +60,20 @@ describe('eventRepo', () => {
 	});
 	test('to update an event when update() is called', async ()=>{
 		//Arrange
-		expect.assertions(3);
-		EventRepository.prototype.updateEvent = jest.fn().mockReturnValue(mockEvents);
-		//Act
+		expect.assertions(2);
 		let updObj = new Event(1, 'Harry\'s Birthday Party', '555 William Street', new Date(), new Date(), new Date(), 'Have fun', 1);
+		EventRepository.prototype.update = jest.fn().mockReturnValue(updObj);
+		//Act
 		let result1 = await sut.updateEvent(updObj);
-		let result2 = await sut.getEventById(1);
 		//Assert
 		expect(result1).toBeTruthy();
 		expect(result1).toBe(true);
-		expect(result2.location).toEqual('555 William Street');
+
 	});
 	test('to delete an event when deleteById() is called', async () =>{
 		//Arrange
-		expect.assertions(2);
-		EventRepository.prototype.deleteEventById = jest.fn().mockReturnValue(mockEvents);
+		expect.assertions(1);
+		EventRepository.prototype.deleteById = jest.fn().mockReturnValue(mockEvents);
 		//Act
 		let result1 = sut.deleteEventById(1);
 		let result2 = sut.getEventById(1);
