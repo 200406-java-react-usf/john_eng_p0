@@ -7,52 +7,36 @@ export class EventService{
 		this.eventRepo = eventRepo;
 	}
 
-	getAllEvent() : Promise<Event[]>{
-
-		return new Promise<Event[]>(async (resolve,reject)=>{
-			let events: Event[] = [];
+	async getAllEvent() : Promise<Event[]>{
 
 			let result = await this.eventRepo.getAll();
 
-			for(let event of result){
-				events.push({...event});
-			}
+			return result;
 
-			resolve(result);
-
-
-		});
 	}
-	getEventById(id: number) : Promise<Event> {
-		return new Promise<Event>(async (resolve, reject)=>{
+	async getEventById(id: number) : Promise<Event> {
 
 			let result = await this.eventRepo.getById(id);
-			console.log('result', result);
-			resolve(result);
-		});
+
+			return result;
 	}
 
-	saveEvent(newObj: Event) : Promise<Event> {
-		return new Promise<Event>(async (resolve, reject)=>{
-			let result = {...await this.eventRepo.save(newObj)};
+	async saveEvent(newObj: Event) : Promise<Event> {
+			let result = await this.eventRepo.save(newObj);
             
-			resolve(result);
-		});
+			return result;
 	}
 
-	updateEvent(updObj: Event) : Promise<boolean> {
-		return new Promise<boolean>(async (resolve, reject)=>{
+	async updateEvent(updObj: Event) : Promise<boolean> {
 			await this.eventRepo.update(updObj);
-			resolve(true);
-		});
+			return true;
 	}
 
-	deleteEventById(id: number) : Promise<boolean> {
-		return new Promise<boolean>(async (resolve, rejected) => {
+	async deleteEventById(id: number) : Promise<boolean> {
+
 			await this.eventRepo.deleteById(id);
 
-			resolve(true);
+			return true;
 
-		});
 	}
 }

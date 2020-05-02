@@ -48,7 +48,7 @@ export class EventRepository implements CrudRepository<Event>{
 			let sql = `insert into app_events(title, time_begin, time_end, notes, address_id, host_id) values
 			('${newObj.title}', '${newObj.time_begin}', '${newObj.time_end}', '${newObj.notes}', '${newObj.address_id}', '${newObj.host_id}')`
 			let rs = await client.query(sql);
-			return mapEventResultSet(rs.rows[0]);
+			return mapEventResultSet(rs.rows[0]);  //make getByUniqueKey
 		}catch(e){
 			console.log(e);
 		}finally{

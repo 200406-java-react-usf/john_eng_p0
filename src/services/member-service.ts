@@ -7,52 +7,37 @@ export class MemberService{
 		this.memberRepo = memberRepo;
 	}
 
-	getAllMember() : Promise<Member[]>{
-
-		return new Promise<Member[]>(async (resolve,reject)=>{
-			let members: Member[] = [];
+	async getAllMember() : Promise<Member[]>{
 
 			let result = await this.memberRepo.getAll();
+			return result;
 
-			for(let member of result){
-				members.push({...member});
-			}
-
-			resolve(result);
-
-
-		});
 	}
-	getMemberById(id: number) : Promise<Member> {
-		return new Promise<Member>(async (resolve, reject)=>{
+	async getMemberById(id: number) : Promise<Member> {
 
 			let result = await this.memberRepo.getById(id);
-			console.log('result', result);
-			resolve(result);
-		});
+			return result;
+
 	}
 
-	saveMember(newObj: Member) : Promise<Member> {
-		return new Promise<Member>(async (resolve, reject)=>{
-			let result = {...await this.memberRepo.save(newObj)};
-            
-			resolve(result);
-		});
+	async saveMember(newObj: Member) : Promise<Member> {
+
+			let result = await this.memberRepo.save(newObj);
+			return result;
 	}
 
-	updateMember(updObj: Member) : Promise<boolean> {
-		return new Promise<boolean>(async (resolve, reject)=>{
+	async updateMember(updObj: Member) : Promise<boolean> {
+
 			await this.memberRepo.update(updObj);
-			resolve(true);
-		});
+			return true;
+
 	}
 
-	deleteMemberById(id: number) : Promise<boolean> {
-		return new Promise<boolean>(async (resolve, rejected) => {
+	async deleteMemberById(id: number) : Promise<boolean> {
+
 			await this.memberRepo.deleteById(id);
 
-			resolve(true);
+			return true;
 
-		});
 	}
 }

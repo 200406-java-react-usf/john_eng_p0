@@ -27,15 +27,15 @@ EventRouter.get('/:id', async (req, resp) => {
 	resp.send();
 });
 
-// EventRouter.post('', async (req, resp) => {
+EventRouter.post('', async (req, resp) => {
 
-//     console.log('POST REQUEST RECEIVED AT /events');
-//     console.log(req.body);
-//     try {
-//         let newEvent = await eventServ.saveEvent(req.body);
-//         return resp.status(201).json(newEvent);
-//     } catch (e) {
-//         return resp.status(400).json(e);
-//     }
+    console.log('POST REQUEST RECEIVED AT /events');
+    console.log(req.body);
+    try {
+        let newEvent = await eventServ.saveEvent(req.body);
+        return resp.status(201).json(newEvent);
+    } catch (e) {
+        return resp.status(400).json(e);
+    }
 
-// });
+});
