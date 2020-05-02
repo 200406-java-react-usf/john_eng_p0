@@ -1,8 +1,10 @@
 import { EventSchema, 
-	MemberSchema } 
+		MemberSchema,
+	 	AddressSchema} 
 	from './schemas';
 import { Event } from '../models/event';
 import { Member } from '../models/member';
+import { Address } from '../models/address';
 
 export function mapEventResultSet(resultSet: EventSchema): Event {
 	if (!resultSet){
@@ -30,5 +32,17 @@ export function mapMemberResultSet(resultSet: MemberSchema): Member {
 		resultSet.biography,
 		resultSet.email,
 		resultSet.telephone
+	);
+}
+export function mapAddressResultSet(resultSet: AddressSchema): Address {
+	if(!resultSet){
+		return {} as Address;
+	}
+	return new Address(
+		resultSet.address_id,
+		resultSet.street,
+		resultSet.city,
+		resultSet.state,
+		resultSet.zip
 	);
 }

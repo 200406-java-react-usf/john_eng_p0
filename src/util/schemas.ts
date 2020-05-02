@@ -15,5 +15,13 @@ export interface MemberSchema{
 	biography: string,
 	email: string,
 	telephone: string
+}
+
+export interface AddressSchema{
+	address_id: number,
+    street: string,
+    city: string,
+    state: string,
+    zip:string
 
 }
