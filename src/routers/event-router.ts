@@ -37,5 +37,17 @@ EventRouter.post('', async (req, resp) => {
     } catch (e) {
         return resp.status(400).json(e);
     }
+});
+
+EventRouter.patch('', async (req, resp) => {
+
+    console.log('PATCH REQUEST RECEIVED AT /events');
+    console.log(req.body);
+    try {
+        let updEvent = await eventServ.updateEvent(req.body);
+        return resp.status(201).json(updEvent);
+    } catch (e) {
+        return resp.status(400).json(e);
+    }
 
 });
