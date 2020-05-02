@@ -73,14 +73,17 @@ export class EventRepository implements CrudRepository<Event>{
 		}
 	}
 
-	deleteById(id: number): Promise<boolean>{
-		return new Promise((resolve, rejects)=>{
-			
-			//find the index of the model and then use array method to delete it
-			
-			resolve(true);
-		});
+	async deleteById(id: number): Promise<boolean>{
+		let client: PoolClient;
+		try{
+			client = await connectionPool.connect();
+			let sql = `delete from app_events where event_id = $1`;
+			let rs = await client.query(sql, [id]);
+			return true;
+		}catch(e){
+			console.log(e);
+		}finally{
+			client && client.release;
+		}
 	}
-
 }
-

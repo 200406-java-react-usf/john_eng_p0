@@ -45,7 +45,19 @@ EventRouter.patch('', async (req, resp) => {
     console.log(req.body);
     try {
         let updEvent = await eventServ.updateEvent(req.body);
-        return resp.status(201).json(updEvent);
+        return resp.status(200).json(updEvent);
+    } catch (e) {
+        return resp.status(400).json(e);
+    }
+
+});
+
+EventRouter.delete('', async (req, resp) => {
+
+    console.log('DELETE REQUEST RECEIVED AT /events');
+    try {
+        let delEvent = await eventServ.deleteEventById(req.body.event_id);
+        return resp.status(204).json(delEvent);
     } catch (e) {
         return resp.status(400).json(e);
     }
