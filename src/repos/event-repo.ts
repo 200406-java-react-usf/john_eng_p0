@@ -4,9 +4,11 @@ import { Event } from '../models/event';
 
 import { PoolClient } from 'pg';
 import { connectionPool } from '..';
+import { mapEventResultSet } from '../util/result-set-mapper';
 
 export class EventRepository implements CrudRepository<Event>{
 
+	
 	async getAll(): Promise<Event[]> {
 
 		let client:PoolClient;
@@ -15,8 +17,7 @@ export class EventRepository implements CrudRepository<Event>{
 			console.log(client);
 			let sql = 'select * from app_events';
 			let rs = await client.query(sql);
-			console.log(rs);
-			return rs.rows
+			return rs.rows.map(mapEventResultSet);
 		}catch(e){
 			console.log(e);
 			// throw new InternalServerError();
@@ -25,26 +26,39 @@ export class EventRepository implements CrudRepository<Event>{
 		}
 		
 	}
-	getById(id: number): Promise<Event>{
-		return new Promise<Event>((resolve,rejects)=>{
-			console.log('id', typeof id);
-			console.log('eventData[0]', typeof eventData[0].event_id)
-			const event = {...eventData.find(event => event.event_id === id)}
-			console.log('event', event);
-			resolve(event);
-		});
+	async getById(id: number): Promise<Event>{
+		let client: PoolClient;
+		try{
+			client = await connectionPool.connect();
+			let sql = `select * from app_events where event_id = $1`;
+			let rs = await client.query(sql, [id]);
+			return mapEventResultSet(rs.rows[0]);
+		}catch(e){
+			console.log(e);
+		}finally{
+			client && client.release;
+		}
+
+
 	}
-	save(newObj: Event): Promise<Event>{
-		return new Promise((resolve, rejects)=>{
-			newObj.event_id = (eventData.length)+1
-			eventData.push(newObj);
-			resolve(newObj);
-		});
+	async save(newObj: Event): Promise<Event>{
+		let client: PoolClient;
+		try{
+			client = await connectionPool.connect();
+			let sql = `insert into app_events(title, time_begin, time_end, notes, address_id, host_id) values
+			('${newObj.title}', '${newObj.time_begin}', '${newObj.time_end}', '${newObj.notes}', '${newObj.address_id}', '${newObj.host_id}')`
+			let rs = await client.query(sql);
+			return mapEventResultSet(rs.rows[0]);
+		}catch(e){
+			console.log(e);
+		}finally{
+			client && client.release;
+		}
 	}
 	update(updObj: Event): Promise<boolean>{
 		return new Promise((resolve, rejects)=>{
 			
-			let persistedEvent = eventData.find((x)=>x.event_id === updObj.event_id)
+			let persistedEvent = eventData.find((x)=>x.event_id === updObj.event_id);
 			
 			persistedEvent = updObj;
 			

@@ -8,9 +8,11 @@ describe('eventRepo', () => {
 	let mockRepo: EventRepository = new EventRepository();
 
 	let mockEvents = [
-		new Event(1, 'Berry\'s Birthday Party', '134 Smith St.', new Date(), new Date(), 'Bring a gifts', 1)
+		new Event(1, 'Harr\'s Birthday Pary', 'May 25 2020 11:00am', 'May 25 2020 14:00am', 'Looking forward to see you all', 1, 1),
+		new Event(2, 'Christmas Pary', 'Dec 25 2020 11:00am', 'Dec 25 2020 14:00am', 'Bring a present.  We are doing secret santa.', 2, 2),
+		new Event(3, 'Happy Halloween Pary', 'Novemeber 25 2020 11:00am', 'Novemeber 25 2020 14:00am', 'Don\'t forget your Custome', 1, 3)
 
-	]
+	];
 
 	beforeEach(()=> {
 
@@ -23,7 +25,7 @@ describe('eventRepo', () => {
 			});
 		}
 
-	})
+	});
 	
 	test('to return all events when getAll() is called', async () => {
 	//Arrange
@@ -49,19 +51,19 @@ describe('eventRepo', () => {
 	test('to add new event when saveEvent() is called', async () =>{
 		//Arrange
 		expect.assertions(2);
-		let newObj = new Event(1, 'Harry\'s Birthday Party', '123 William Street', new Date(), new Date(), 'Have fun', 1);
+		let newObj = new Event(1, 'Happy Halloween Pary', 'Novemeber 25 2020 11:00am', 'Novemeber 25 2020 14:00am', 'Don\'t forget your Custome', 1, 3)
 		EventRepository.prototype.save = jest.fn().mockReturnValue(newObj);
 	
 		//Act
 		let result = await sut.saveEvent(newObj);
 		//Assert
 		expect(result).toBeTruthy();
-		expect(result.location).toEqual('123 William Street');
+		expect(result.title).toEqual('Harry Halloween Party');
 	});
 	test('to update an event when updateEvent() is called', async ()=>{
 		//Arrange
 		expect.assertions(2);
-		let updObj = new Event(1, 'Harry\'s Birthday Party', '555 William Street', new Date(), new Date(), 'Have fun', 1);
+		let updObj = new Event(1, 'Happ Halloween Pary', 'Novemeber 25 2020 11:00am', 'Novemeber 25 2020 14:00am', 'Don\'t forget your Custome', 1, 3)
 		EventRepository.prototype.update = jest.fn().mockReturnValue(updObj);
 		//Act
 		let result1 = await sut.updateEvent(updObj);

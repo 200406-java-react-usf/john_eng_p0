@@ -11,6 +11,6 @@ const memberRepo = new MemberRepository();
 const memberServ = new MemberService(memberRepo);
 
 export default{
-    eventServ,
-    memberServ
-}
+	eventServ,
+	memberServ
+};
