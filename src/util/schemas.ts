@@ -25,3 +25,16 @@ export interface AddressSchema{
     zip:string
 
 }
+
+export interface ItemSchema{
+	item_id: number,
+    item: string,
+    comment: string,
+    event_id: number,
+    member_id: number,
+}
+
+export interface EventMemberSchema{
+	event_id: number,
+	member_id: number
+}

@@ -1,10 +1,14 @@
 import { EventSchema, 
 		MemberSchema,
-	 	AddressSchema} 
+		AddressSchema,
+		ItemSchema,
+		EventMemberSchema} 
 	from './schemas';
 import { Event } from '../models/event';
 import { Member } from '../models/member';
 import { Address } from '../models/address';
+import { Item } from '../models/item';
+import { EventMember } from '../models/eventMember';
 
 export function mapEventResultSet(resultSet: EventSchema): Event {
 	if (!resultSet){
@@ -44,5 +48,27 @@ export function mapAddressResultSet(resultSet: AddressSchema): Address {
 		resultSet.city,
 		resultSet.state,
 		resultSet.zip
+	);
+}
+export function mapItemResultSet(resultSet: ItemSchema): Item {
+	if(!resultSet){
+		return {} as Item;
+	}
+	return new Item(
+		resultSet.item_id,
+        resultSet.item,
+        resultSet.comment,
+        resultSet.event_id,
+        resultSet.member_id
+	);
+}
+export function mapEventMemberResultSet(resultSet: EventMemberSchema): EventMember {
+	if(!resultSet){
+		return {} as EventMember;
+	}
+	return new EventMember(
+        resultSet.event_id,
+        resultSet.member_id
+
 	);
 }

@@ -3,6 +3,8 @@ import express from 'express';
 import { EventRouter } from './routers/event-router';
 import { MemberRouter } from './routers/member-router';
 import { AddressRouter } from './routers/address-router';
+import { ItemRouter } from './routers/item-router';
+import { EventMemberRouter } from './routers/eventMember-router';
 
 import { Pool } from 'pg';
 
@@ -25,7 +27,9 @@ app.use('/', express.json());
 
 app.use('/events', EventRouter);
 app.use('/members', MemberRouter);
-app.use('/address', AddressRouter);
+app.use('/addresses', AddressRouter);
+app.use('/items', ItemRouter);
+app.use('/events_members', EventMemberRouter)
 
 
 app.listen(8000, ()=> {
