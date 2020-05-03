@@ -3,14 +3,14 @@ export class Event{
 //variables
 event_id: number;
 title: string;
-time_begin: string;
-time_end: string;
+time_begin: Date;
+time_end: Date;
 notes: string;
 address_id: number;
 host_id: number;
 
 //constructor
-constructor(event_id:number, title:string, time_begin:string, time_end:string,
+constructor(event_id:number, title:string, time_begin: Date, time_end: Date,
 	 notes:string, address_id:number, host_id: number){
 	this.event_id = event_id; 
 	this.title = title; 

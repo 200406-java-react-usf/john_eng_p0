@@ -1,8 +1,8 @@
 export interface EventSchema {
 	event_id: number,
 	title: string,
-	time_begin: string,
-	time_end: string,
+	time_begin: Date,
+	time_end: Date,
 	notes: string,
 	address_id: number,
 	host_id: number

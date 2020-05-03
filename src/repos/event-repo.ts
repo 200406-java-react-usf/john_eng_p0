@@ -6,6 +6,8 @@ import { PoolClient } from 'pg';
 import { connectionPool } from '..';
 import { mapEventResultSet } from '../util/result-set-mapper';
 
+import { InternalServerError } from '../errors/errors';
+
 export class EventRepository implements CrudRepository<Event>{
 
 	
@@ -20,7 +22,7 @@ export class EventRepository implements CrudRepository<Event>{
 			return rs.rows.map(mapEventResultSet);
 		}catch(e){
 			console.log(e);
-			// throw new InternalServerError();
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}
@@ -30,58 +32,79 @@ export class EventRepository implements CrudRepository<Event>{
 		let client: PoolClient;
 		try{
 			client = await connectionPool.connect();
-			let sql = `select * from app_events where event_id = $1`;
+			let sql = 'select * from app_events where event_id = $1';
 			let rs = await client.query(sql, [id]);
 			return mapEventResultSet(rs.rows[0]);
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}
-
-
 	}
+
+	async getByUniqueKey(key: string, val: string): Promise<Event> {
+
+		let client: PoolClient;
+
+		try {
+			client = await connectionPool.connect();
+			let sql = `select * from app_events where ${key} = $1`;
+			let rs = await client.query(sql, [val]);
+			return mapEventResultSet(rs.rows[0]);
+		} catch (e) {
+			console.log(e);
+			throw new InternalServerError();
+		} finally {
+			client && client.release();
+		}		
+}
+
 	async save(newObj: Event): Promise<Event>{
 		let client: PoolClient;
 		try{
 			client = await connectionPool.connect();
 			let sql = `insert into app_events(title, time_begin, time_end, notes, address_id, host_id) values
-			('${newObj.title}', '${newObj.time_begin}', '${newObj.time_end}', '${newObj.notes}', '${newObj.address_id}', '${newObj.host_id}')`
-			let rs = await client.query(sql);
-			return mapEventResultSet(rs.rows[0]);  //make getByUniqueKey
+			('${newObj.title}', '${newObj.time_begin}', '${newObj.time_end}', '${newObj.notes}', '${newObj.address_id}', '${newObj.host_id}')`;
+			await client.query(sql);
+			return await this.getByUniqueKey('title', newObj.title);
+
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}
 	}
 	async update(updObj: Event): Promise<boolean>{
+
 		let client: PoolClient;
 		try{
 			client = await connectionPool.connect();
 			let sql = 	`update app_events 
 						set title = '${updObj.title}', time_begin = '${updObj.time_begin}', time_end = '${updObj.time_end}', notes = '${updObj.notes}', address_id = '${updObj.address_id}', host_id = '${updObj.host_id}'
 						where event_id = $1`;
-			console.log(sql)
-			let rs = await client.query(sql, [updObj.event_id]);
-			return true;
+				await client.query(sql, [updObj.event_id]);
+
+			// if(!isEmptyObject(await this.getById(updObj.event_id)))
+				return true;
 
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}
 	}
 
 	async deleteById(id: number): Promise<boolean>{
+
 		let client: PoolClient;
+
 		try{
 			client = await connectionPool.connect();
-			let sql = `delete from app_events where event_id = $1`;
+			let sql = 'delete from app_events where event_id = $1';
 			let rs = await client.query(sql, [id]);
 			return true;
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}

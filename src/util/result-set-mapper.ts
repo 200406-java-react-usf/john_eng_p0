@@ -1,8 +1,8 @@
 import { EventSchema, 
-		MemberSchema,
-		AddressSchema,
-		ItemSchema,
-		EventMemberSchema} 
+	MemberSchema,
+	AddressSchema,
+	ItemSchema,
+	EventMemberSchema} 
 	from './schemas';
 import { Event } from '../models/event';
 import { Member } from '../models/member';
@@ -56,10 +56,10 @@ export function mapItemResultSet(resultSet: ItemSchema): Item {
 	}
 	return new Item(
 		resultSet.item_id,
-        resultSet.item,
-        resultSet.comment,
-        resultSet.event_id,
-        resultSet.member_id
+		resultSet.item,
+		resultSet.comment,
+		resultSet.event_id,
+		resultSet.member_id
 	);
 }
 export function mapEventMemberResultSet(resultSet: EventMemberSchema): EventMember {
@@ -67,8 +67,8 @@ export function mapEventMemberResultSet(resultSet: EventMemberSchema): EventMemb
 		return {} as EventMember;
 	}
 	return new EventMember(
-        resultSet.event_id,
-        resultSet.member_id
+		resultSet.event_id,
+		resultSet.member_id
 
 	);
 }

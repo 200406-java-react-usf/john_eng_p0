@@ -1,5 +1,5 @@
-import { EventMember } from '../models/eventMember';
 import { EventMemberRepository } from '../repos/eventMember-repo';
+import { EventMember } from '../models/eventMember';
 
 export class EventMemberService{
 
@@ -9,34 +9,34 @@ export class EventMemberService{
 
 	async getAllEventMember() : Promise<EventMember[]>{
 
-			let result = await this.eventMemberRepo.getAll();
+		let result = await this.eventMemberRepo.getAll();
 
-			return result;
+		return result;
 
 	}
 	async getEventMemberById(id: number) : Promise<EventMember> {
 
-			let result = await this.eventMemberRepo.getById(id);
+		let result = await this.eventMemberRepo.getById(id);
 
-			return result;
+		return result;
 	}
 
 	async saveEventMember(newObj: EventMember) : Promise<EventMember> {
-			let result = await this.eventMemberRepo.save(newObj);
+		let result = await this.eventMemberRepo.save(newObj);
             
-			return result;
+		return result;
 	}
 
 	async updateEventMember(updObj: EventMember) : Promise<boolean> {
-			await this.eventMemberRepo.update(updObj);
-			return true;
+		await this.eventMemberRepo.update(updObj);
+		return true;
 	}
 
 	async deleteEventMemberById(id: number, id2: number) : Promise<boolean> {
 
-			await this.eventMemberRepo.deleteById(id, id2);
+		await this.eventMemberRepo.deleteById(id, id2);
 
-			return true;
+		return true;
 
 	}
 }

@@ -31,7 +31,7 @@ export class MemberRepository implements CrudRepository<Member>{
 		let client: PoolClient;
 		try{
 			client = await connectionPool.connect();
-			let sql = `select * from app_members where member_id = $1`;
+			let sql = 'select * from app_members where member_id = $1';
 			let rs = await client.query(sql, [id]);
 			return mapMemberResultSet(rs.rows[0]);
 		}catch(e){
@@ -39,15 +39,31 @@ export class MemberRepository implements CrudRepository<Member>{
 		}finally{
 			client && client.release;
 		}
-
-
 	}
+
+	async getByUniqueKey(key: string, val: string): Promise<Member> {
+
+		let client: PoolClient;
+
+		try {
+			client = await connectionPool.connect();
+			let sql = `select * from app_members where ${key} = $1`;
+			let rs = await client.query(sql, [val]);
+			return mapMemberResultSet(rs.rows[0]);
+		} catch (e) {
+			console.log(e);
+			// throw new InternalServerError();
+		} finally {
+			client && client.release();
+		}		
+	}
+
 	async save(newObj: Member): Promise<Member>{
 		let client: PoolClient;
 		try{
 			client = await connectionPool.connect();
 			let sql = `insert into app_members(first_name, last_name, biography, email, telephone) values
-			('${newObj.first_name}', '${newObj.last_name}', '${newObj.biography}', '${newObj.email}', '${newObj.telephone}')`
+			('${newObj.first_name}', '${newObj.last_name}', '${newObj.biography}', '${newObj.email}', '${newObj.telephone}')`;
 			let rs = await client.query(sql);
 			return mapMemberResultSet(rs.rows[0]);  //make getByUniqueKey
 		}catch(e){
@@ -63,7 +79,7 @@ export class MemberRepository implements CrudRepository<Member>{
 			let sql = 	`update app_members 
 						set first_name = '${updObj.first_name}', last_name = '${updObj.last_name}', biography = '${updObj.biography}', email = '${updObj.email}', telephone = '${updObj.telephone}'
 						where member_id = $1`;
-			console.log(sql)
+			console.log(sql);
 			let rs = await client.query(sql, [updObj.member_id]);
 			return true;
 
@@ -78,7 +94,7 @@ export class MemberRepository implements CrudRepository<Member>{
 		let client: PoolClient;
 		try{
 			client = await connectionPool.connect();
-			let sql = `delete from app_members where member_id = $1`;
+			let sql = 'delete from app_members where member_id = $1';
 			let rs = await client.query(sql, [id]);
 			return true;
 		}catch(e){

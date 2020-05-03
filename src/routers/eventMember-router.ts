@@ -29,14 +29,14 @@ EventMemberRouter.get('/:id', async (req, resp) => {
 
 EventMemberRouter.post('', async (req, resp) => {
 
-    console.log('POST REQUEST RECEIVED AT /eventMembers');
-    console.log(req.body);
-    try {
-        let newEventMember = await eventMemberServ.saveEventMember(req.body);
-        return resp.status(201).json(newEventMember);
-    } catch (e) {
-        return resp.status(400).json(e);
-    }
+	console.log('POST REQUEST RECEIVED AT /eventMembers');
+	console.log(req.body);
+	try {
+		let newEventMember = await eventMemberServ.saveEventMember(req.body);
+		return resp.status(201).json(newEventMember);
+	} catch (e) {
+		return resp.status(400).json(e);
+	}
 });
 
 // EventMemberRouter.patch('', async (req, resp) => {
@@ -54,12 +54,12 @@ EventMemberRouter.post('', async (req, resp) => {
 
 EventMemberRouter.delete('', async (req, resp) => {
 
-    console.log('DELETE REQUEST RECEIVED AT /eventMembers');
-    try {
-        let delEventMember = await eventMemberServ.deleteEventMemberById(req.body.event_id, req.body.member_id);
-        return resp.status(204).json(delEventMember);
-    } catch (e) {
-        return resp.status(400).json(e);
-    }
+	console.log('DELETE REQUEST RECEIVED AT /eventMembers');
+	try {
+		let delEventMember = await eventMemberServ.deleteEventMemberById(req.body.event_id, req.body.member_id);
+		return resp.status(204).json(delEventMember);
+	} catch (e) {
+		return resp.status(400).json(e);
+	}
 
 });

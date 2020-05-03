@@ -29,7 +29,7 @@ app.use('/events', EventRouter);
 app.use('/members', MemberRouter);
 app.use('/addresses', AddressRouter);
 app.use('/items', ItemRouter);
-app.use('/events_members', EventMemberRouter)
+app.use('/events_members', EventMemberRouter);
 
 
 app.listen(8000, ()=> {

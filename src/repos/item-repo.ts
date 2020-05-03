@@ -15,8 +15,8 @@ export class ItemRepository implements CrudRepository<Item>{
 			client = await connectionPool.connect();
 			console.log(client);
 			let sql = 'select * from app_items';
-            let rs = await client.query(sql);
-            console.log(rs.rows)
+			let rs = await client.query(sql);
+			console.log(rs.rows);
 			return rs.rows.map(mapItemResultSet);
 		}catch(e){
 			console.log(e);
@@ -29,8 +29,8 @@ export class ItemRepository implements CrudRepository<Item>{
 	async getById(id: number): Promise<Item>{
 		let client: PoolClient;
 		try{
-            client = await connectionPool.connect();
-			let sql = `select * from app_items where item_id = $1`;
+			client = await connectionPool.connect();
+			let sql = 'select * from app_items where item_id = $1';
 			let rs = await client.query(sql, [id]);
 			return mapItemResultSet(rs.rows[0]);
 		}catch(e){
@@ -38,9 +38,25 @@ export class ItemRepository implements CrudRepository<Item>{
 		}finally{
 			client && client.release;
 		}
-
-
 	}
+
+	async getByUniqueKey(key: string, val: string): Promise<Item> {
+
+		let client: PoolClient;
+
+		try {
+			client = await connectionPool.connect();
+			let sql = `select * from app_items where ${key} = $1`;
+			let rs = await client.query(sql, [val]);
+			return mapItemResultSet(rs.rows[0]);
+		} catch (e) {
+			console.log(e);
+			// throw new InternalServerError();
+		} finally {
+			client && client.release();
+		}		
+	}
+
 	async save(newObj: Item): Promise<Item>{
 		let client: PoolClient;
 		try{
@@ -62,7 +78,7 @@ export class ItemRepository implements CrudRepository<Item>{
 			let sql = 	`update app_items 
 						set item = '${updObj.item}', comment = '${updObj.comment}', event_id = '${updObj.event_id}', member_id = '${updObj.member_id}'
 						where item_id = $1`;
-			console.log(sql)
+			console.log(sql);
 			let rs = await client.query(sql, [updObj.item_id]);
 			return true;
 
@@ -77,7 +93,7 @@ export class ItemRepository implements CrudRepository<Item>{
 		let client: PoolClient;
 		try{
 			client = await connectionPool.connect();
-			let sql = `delete from app_items where item_id = $1`;
+			let sql = 'delete from app_items where item_id = $1';
 			let rs = await client.query(sql, [id]);
 			return true;
 		}catch(e){

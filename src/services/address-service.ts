@@ -9,34 +9,29 @@ export class AddressService{
 
 	async getAllAddress() : Promise<Address[]>{
 
-			let result = await this.addressRepo.getAll();
-
-			return result;
+		let result = await this.addressRepo.getAll();
+		return result;
 
 	}
 	async getAddressById(id: number) : Promise<Address> {
 
-			let result = await this.addressRepo.getById(id);
-
-			return result;
+		let result = await this.addressRepo.getById(id);
+		return result;
 	}
 
 	async saveAddress(newObj: Address) : Promise<Address> {
-			let result = await this.addressRepo.save(newObj);
-            
-			return result;
+		let result = await this.addressRepo.save(newObj);
+		return result;
 	}
 
 	async updateAddress(updObj: Address) : Promise<boolean> {
-			await this.addressRepo.update(updObj);
-			return true;
+		await this.addressRepo.update(updObj);
+		return true;
 	}
 
 	async deleteAddressById(id: number) : Promise<boolean> {
-
-			await this.addressRepo.deleteById(id);
-
-			return true;
+		await this.addressRepo.deleteById(id);
+		return true;
 
 	}
 }

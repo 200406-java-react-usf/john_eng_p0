@@ -22,44 +22,44 @@ EventRouter.get('/:id', async (req, resp) => {
 		console.log('hello', payload);
 		resp.status(200).json(payload);
 	}catch(e){
-		resp.status(400).json(e);
+		resp.status(e.statusCode).json(e);
 	}
 	resp.send();
 });
 
 EventRouter.post('', async (req, resp) => {
 
-    console.log('POST REQUEST RECEIVED AT /events');
-    console.log(req.body);
-    try {
-        let newEvent = await eventServ.saveEvent(req.body);
-        return resp.status(201).json(newEvent);
-    } catch (e) {
-        return resp.status(400).json(e);
-    }
+	console.log('POST REQUEST RECEIVED AT /events');
+	console.log(req.body);
+	try {
+		let newEvent = await eventServ.saveEvent(req.body);
+		return resp.status(201).json(newEvent);
+	} catch (e) {
+		return resp.status(e.statusCode).json(e);
+	}
 });
 
 EventRouter.patch('', async (req, resp) => {
 
-    console.log('PATCH REQUEST RECEIVED AT /events');
-    console.log(req.body);
-    try {
-        let updEvent = await eventServ.updateEvent(req.body);
-        return resp.status(200).json(updEvent);
-    } catch (e) {
-        return resp.status(400).json(e);
-    }
+	console.log('PATCH REQUEST RECEIVED AT /events');
+	console.log(req.body);
+	try {
+		let updEvent = await eventServ.updateEvent(req.body);
+		return resp.status(200).json(updEvent);
+	} catch (e) {
+		return resp.status(e.statusCode).json(e);
+	}
 
 });
 
 EventRouter.delete('', async (req, resp) => {
 
-    console.log('DELETE REQUEST RECEIVED AT /events');
-    try {
-        let delEvent = await eventServ.deleteEventById(req.body.event_id);
-        return resp.status(204).json(delEvent);
-    } catch (e) {
-        return resp.status(400).json(e);
-    }
+	console.log('DELETE REQUEST RECEIVED AT /events');
+	try {
+		let delEvent = await eventServ.deleteEventById(req.body.event_id);
+		return resp.status(204).json(delEvent);
+	} catch (e) {
+		return resp.status(e.statusCode).json(e);
+	}
 
 });

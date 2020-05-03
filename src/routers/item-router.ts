@@ -29,37 +29,37 @@ ItemRouter.get('/:id', async (req, resp) => {
 
 ItemRouter.post('', async (req, resp) => {
 
-    console.log('POST REQUEST RECEIVED AT /items');
-    console.log(req.body);
-    try {
-        let newItem = await itemServ.saveItem(req.body);
-        return resp.status(201).json(newItem);
-    } catch (e) {
-        return resp.status(400).json(e);
-    }
+	console.log('POST REQUEST RECEIVED AT /items');
+	console.log(req.body);
+	try {
+		let newItem = await itemServ.saveItem(req.body);
+		return resp.status(201).json(newItem);
+	} catch (e) {
+		return resp.status(400).json(e);
+	}
 });
 
 ItemRouter.patch('', async (req, resp) => {
 
-    console.log('PATCH REQUEST RECEIVED AT /items');
-    console.log(req.body);
-    try {
-        let updItem = await itemServ.updateItem(req.body);
-        return resp.status(200).json(updItem);
-    } catch (e) {
-        return resp.status(400).json(e);
-    }
-    resp.send();
+	console.log('PATCH REQUEST RECEIVED AT /items');
+	console.log(req.body);
+	try {
+		let updItem = await itemServ.updateItem(req.body);
+		return resp.status(200).json(updItem);
+	} catch (e) {
+		return resp.status(400).json(e);
+	}
+	resp.send();
 });
 
 ItemRouter.delete('', async (req, resp) => {
 
-    console.log('DELETE REQUEST RECEIVED AT /items');
-    try {
-        let delItem = await itemServ.deleteItemById(req.body.item_id);
-        return resp.status(204).json(delItem);
-    } catch (e) {
-        return resp.status(400).json(e);
-    }
+	console.log('DELETE REQUEST RECEIVED AT /items');
+	try {
+		let delItem = await itemServ.deleteItemById(req.body.item_id);
+		return resp.status(204).json(delItem);
+	} catch (e) {
+		return resp.status(400).json(e);
+	}
 
 });

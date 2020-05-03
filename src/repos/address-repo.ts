@@ -28,8 +28,8 @@ export class AddressRepository implements CrudRepository<Address>{
 	async getById(id: number): Promise<Address>{
 		let client: PoolClient;
 		try{
-            client = await connectionPool.connect();
-			let sql = `select * from app_event_addresses where address_id = $1`;
+			client = await connectionPool.connect();
+			let sql = 'select * from app_event_addresses where address_id = $1';
 			let rs = await client.query(sql, [id]);
 			return mapAddressResultSet(rs.rows[0]);
 		}catch(e){
@@ -37,9 +37,25 @@ export class AddressRepository implements CrudRepository<Address>{
 		}finally{
 			client && client.release;
 		}
-
-
 	}
+
+		async getByUniqueKey(key: string, val: string): Promise<Address> {
+
+			let client: PoolClient;
+
+			try {
+				client = await connectionPool.connect();
+				let sql = `select * from app_event_addresses where ${key} = $1`;
+				let rs = await client.query(sql, [val]);
+				return mapAddressResultSet(rs.rows[0]);
+			} catch (e) {
+				console.log(e);
+				// throw new InternalServerError();
+			} finally {
+				client && client.release();
+			}		
+	}
+
 	async save(newObj: Address): Promise<Address>{
 		let client: PoolClient;
 		try{
@@ -61,7 +77,7 @@ export class AddressRepository implements CrudRepository<Address>{
 			let sql = 	`update app_event_addresses 
 						set street = '${updObj.street}', city = '${updObj.city}', state = '${updObj.state}', zip = '${updObj.zip}'
 						where address_id = $1`;
-			console.log(sql)
+			console.log(sql);
 			let rs = await client.query(sql, [updObj.address_id]);
 			return true;
 
@@ -76,7 +92,7 @@ export class AddressRepository implements CrudRepository<Address>{
 		let client: PoolClient;
 		try{
 			client = await connectionPool.connect();
-			let sql = `delete from app_event_addresses where address_id = $1`;
+			let sql = 'delete from app_event_addresses where address_id = $1';
 			let rs = await client.query(sql, [id]);
 			return true;
 		}catch(e){

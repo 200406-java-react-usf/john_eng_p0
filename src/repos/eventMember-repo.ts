@@ -15,8 +15,8 @@ export class EventMemberRepository implements CrudRepository<EventMember>{
 			client = await connectionPool.connect();
 			console.log(client);
 			let sql = 'select * from app_events_members';
-            let rs = await client.query(sql);
-            console.log(rs.rows)
+			let rs = await client.query(sql);
+			console.log(rs.rows);
 			return rs.rows.map(mapEventMemberResultSet);
 		}catch(e){
 			console.log(e);
@@ -29,8 +29,8 @@ export class EventMemberRepository implements CrudRepository<EventMember>{
 	async getById(id: number): Promise<EventMember>{
 		let client: PoolClient;
 		try{
-            client = await connectionPool.connect();
-			let sql = `select * from app_events_members where eventMember_id = $1`;
+			client = await connectionPool.connect();
+			let sql = 'select * from app_events_members where eventMember_id = $1';
 			let rs = await client.query(sql, [id]);
 			return mapEventMemberResultSet(rs.rows[0]);
 		}catch(e){
@@ -38,9 +38,25 @@ export class EventMemberRepository implements CrudRepository<EventMember>{
 		}finally{
 			client && client.release;
 		}
-
-
 	}
+
+	async getByUniqueKey(key: string, val: string): Promise<EventMember> {
+
+		let client: PoolClient;
+
+		try {
+			client = await connectionPool.connect();
+			let sql = `select * from app_events_members where ${key} = $1`;
+			let rs = await client.query(sql, [val]);
+			return mapEventMemberResultSet(rs.rows[0]);
+		} catch (e) {
+			console.log(e);
+			// throw new InternalServerError();
+		} finally {
+			client && client.release();
+		}		
+	}
+
 	async save(newObj: EventMember): Promise<EventMember>{
 		let client: PoolClient;
 		try{
@@ -77,7 +93,7 @@ export class EventMemberRepository implements CrudRepository<EventMember>{
 		let client: PoolClient;
 		try{
 			client = await connectionPool.connect();
-			let sql = `delete from app_events_members where event_id = $1 and member_id = $2`;
+			let sql = 'delete from app_events_members where event_id = $1 and member_id = $2';
 			let rs = await client.query(sql, [event_id, member_id]);
 			return true;
 		}catch(e){
