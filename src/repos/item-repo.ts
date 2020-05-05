@@ -4,6 +4,7 @@ import { Item } from '../models/item';
 import { PoolClient } from 'pg';
 import { connectionPool } from '..';
 import { mapItemResultSet } from '../util/result-set-mapper';
+import { InternalServerError } from '../errors/errors';
 
 export class ItemRepository implements CrudRepository<Item>{
 
@@ -19,8 +20,7 @@ export class ItemRepository implements CrudRepository<Item>{
 			console.log(rs.rows);
 			return rs.rows.map(mapItemResultSet);
 		}catch(e){
-			console.log(e);
-			// throw new InternalServerError();
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}
@@ -34,7 +34,7 @@ export class ItemRepository implements CrudRepository<Item>{
 			let rs = await client.query(sql, [id]);
 			return mapItemResultSet(rs.rows[0]);
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}
@@ -50,8 +50,7 @@ export class ItemRepository implements CrudRepository<Item>{
 			let rs = await client.query(sql, [val]);
 			return mapItemResultSet(rs.rows[0]);
 		} catch (e) {
-			console.log(e);
-			// throw new InternalServerError();
+			throw new InternalServerError();
 		} finally {
 			client && client.release();
 		}		
@@ -63,10 +62,12 @@ export class ItemRepository implements CrudRepository<Item>{
 			client = await connectionPool.connect();
 			let sql = `insert into app_items(item, comment, event_id, member_id) values
 			('${newObj.item}', '${newObj.comment}', '${newObj.event_id}', '${newObj.member_id}');`;
-			let rs = await client.query(sql);
-			return mapItemResultSet(rs.rows[0]);  //make getByUniqueKey
+			await client.query(sql);
+			let sql2 = 'SELECT * FROM app_items WHERE item_id=(SELECT max(item_id) FROM app_items)';
+			let rs = await client.query(sql2);
+			return mapItemResultSet(rs.rows[0]);
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}
@@ -78,12 +79,12 @@ export class ItemRepository implements CrudRepository<Item>{
 			let sql = 	`update app_items 
 						set item = '${updObj.item}', comment = '${updObj.comment}', event_id = '${updObj.event_id}', member_id = '${updObj.member_id}'
 						where item_id = $1`;
-			console.log(sql);
-			let rs = await client.query(sql, [updObj.item_id]);
+
+			await client.query(sql, [updObj.item_id]);
 			return true;
 
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}
@@ -94,10 +95,11 @@ export class ItemRepository implements CrudRepository<Item>{
 		try{
 			client = await connectionPool.connect();
 			let sql = 'delete from app_items where item_id = $1';
-			let rs = await client.query(sql, [id]);
+			await client.query(sql, [id]);
+
 			return true;
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}

@@ -19,7 +19,6 @@ EventRouter.get('/:id', async (req, resp) => {
 	const id = +req.params.id;
 	try{
 		let payload = await eventServ.getEventById(id);
-		console.log('hello', payload);
 		resp.status(200).json(payload);
 	}catch(e){
 		resp.status(e.statusCode).json(e);
@@ -30,7 +29,6 @@ EventRouter.get('/:id', async (req, resp) => {
 EventRouter.post('', async (req, resp) => {
 
 	console.log('POST REQUEST RECEIVED AT /events');
-	console.log(req.body);
 	try {
 		let newEvent = await eventServ.saveEvent(req.body);
 		return resp.status(201).json(newEvent);
@@ -42,7 +40,6 @@ EventRouter.post('', async (req, resp) => {
 EventRouter.patch('', async (req, resp) => {
 
 	console.log('PATCH REQUEST RECEIVED AT /events');
-	console.log(req.body);
 	try {
 		let updEvent = await eventServ.updateEvent(req.body);
 		return resp.status(200).json(updEvent);

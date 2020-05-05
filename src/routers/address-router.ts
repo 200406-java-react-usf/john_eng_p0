@@ -10,7 +10,7 @@ AddressRouter.get('', async (req, resp)=> {
 		let payload = await addressServ.getAllAddress();
 		resp.status(200).json(payload);
 	}catch(e){
-		resp.status(500).json(e);
+		resp.status(e.statusCode).json(e);
 	}
 	resp.send();
 });
@@ -19,10 +19,9 @@ AddressRouter.get('/:id', async (req, resp) => {
 	const id = +req.params.id;
 	try{
 		let payload = await addressServ.getAddressById(id);
-		console.log('hello', payload);
 		resp.status(200).json(payload);
 	}catch(e){
-		resp.status(400).json(e);
+		resp.status(e.statusCode).json(e);
 	}
 	resp.send();
 });
@@ -30,24 +29,22 @@ AddressRouter.get('/:id', async (req, resp) => {
 AddressRouter.post('', async (req, resp) => {
 
 	console.log('POST REQUEST RECEIVED AT /addresss');
-	console.log(req.body);
 	try {
 		let newAddress = await addressServ.saveAddress(req.body);
 		return resp.status(201).json(newAddress);
 	} catch (e) {
-		return resp.status(400).json(e);
+		return resp.status(e.statusCode).json(e);
 	}
 });
 
 AddressRouter.patch('', async (req, resp) => {
 
 	console.log('PATCH REQUEST RECEIVED AT /addresss');
-	console.log(req.body);
 	try {
 		let updAddress = await addressServ.updateAddress(req.body);
 		return resp.status(200).json(updAddress);
 	} catch (e) {
-		return resp.status(400).json(e);
+		return resp.status(e.statusCode).json(e);
 	}
 	resp.send();
 });
@@ -59,7 +56,7 @@ AddressRouter.delete('', async (req, resp) => {
 		let delAddress = await addressServ.deleteAddressById(req.body.address_id);
 		return resp.status(204).json(delAddress);
 	} catch (e) {
-		return resp.status(400).json(e);
+		return resp.status(e.statusCode).json(e);
 	}
 
 });

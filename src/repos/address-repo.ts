@@ -4,6 +4,7 @@ import { Address } from '../models/address';
 import { PoolClient } from 'pg';
 import { connectionPool } from '..';
 import { mapAddressResultSet } from '../util/result-set-mapper';
+import { InternalServerError } from '../errors/errors';
 
 export class AddressRepository implements CrudRepository<Address>{
 
@@ -18,8 +19,7 @@ export class AddressRepository implements CrudRepository<Address>{
 			let rs = await client.query(sql);
 			return rs.rows.map(mapAddressResultSet);
 		}catch(e){
-			console.log(e);
-			// throw new InternalServerError();
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}
@@ -33,7 +33,7 @@ export class AddressRepository implements CrudRepository<Address>{
 			let rs = await client.query(sql, [id]);
 			return mapAddressResultSet(rs.rows[0]);
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}
@@ -49,8 +49,7 @@ export class AddressRepository implements CrudRepository<Address>{
 				let rs = await client.query(sql, [val]);
 				return mapAddressResultSet(rs.rows[0]);
 			} catch (e) {
-				console.log(e);
-				// throw new InternalServerError();
+				throw new InternalServerError();
 			} finally {
 				client && client.release();
 			}		
@@ -62,10 +61,12 @@ export class AddressRepository implements CrudRepository<Address>{
 			client = await connectionPool.connect();
 			let sql = `insert into app_event_addresses(street, city, state, zip) values
 			('${newObj.street}', '${newObj.city}', '${newObj.state}', '${newObj.zip}');`;
-			let rs = await client.query(sql);
-			return mapAddressResultSet(rs.rows[0]);  //make getByUniqueKey
+			await client.query(sql);
+			let sql2 = 'SELECT * FROM app_event_addresses WHERE address_id=(SELECT max(address_id) FROM app_event_addresses)';
+			let rs = await client.query(sql2);
+			return mapAddressResultSet(rs.rows[0]);
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}
@@ -77,12 +78,11 @@ export class AddressRepository implements CrudRepository<Address>{
 			let sql = 	`update app_event_addresses 
 						set street = '${updObj.street}', city = '${updObj.city}', state = '${updObj.state}', zip = '${updObj.zip}'
 						where address_id = $1`;
-			console.log(sql);
-			let rs = await client.query(sql, [updObj.address_id]);
+			await client.query(sql, [updObj.address_id]);
 			return true;
 
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}
@@ -93,10 +93,10 @@ export class AddressRepository implements CrudRepository<Address>{
 		try{
 			client = await connectionPool.connect();
 			let sql = 'delete from app_event_addresses where address_id = $1';
-			let rs = await client.query(sql, [id]);
+			await client.query(sql, [id]);
 			return true;
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}

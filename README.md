@@ -1,15 +1,14 @@
 # Project 0
 Party Event API
 
-The api allows members to join the Party Event Group. They can see what events are active and can join them. 
-They also have the option to bring items to share in the event.
+Have you ever been in a party where you check to see who was hosting it, where is it, how many people in the event, and who is bring what.
+Well, you have find the right API to make it easier to keep track of things.  This api will store the events, event address members, event members and items in the events.
+
 
 What is the benefit of this API?
-It provide info:
-about the events
-about the members
-of what items the members bring
-of shared items in the event
+1) It provides information about the party such as time begin, time end, title, hosting person and address.
+2) It provides information about who are joining the party.
+3) It provides information about items that members bring to the event.
 
 
 ## ERD

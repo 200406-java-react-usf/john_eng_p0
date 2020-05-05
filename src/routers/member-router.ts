@@ -19,10 +19,9 @@ MemberRouter.get('/:id', async (req, resp) => {
 	const id = +req.params.id;
 	try{
 		let payload = await memberServ.getMemberById(id);
-		console.log('hello', payload);
 		resp.status(200).json(payload);
 	}catch(e){
-		resp.status(400).json(e);
+		resp.status(e.statusCode).json(e);
 	}
 	resp.send();
 });
@@ -30,24 +29,22 @@ MemberRouter.get('/:id', async (req, resp) => {
 MemberRouter.post('', async (req, resp) => {
 
 	console.log('POST REQUEST RECEIVED AT /members');
-	console.log(req.body);
 	try {
 		let newMember = await memberServ.saveMember(req.body);
 		return resp.status(201).json(newMember);
 	} catch (e) {
-		return resp.status(400).json(e);
+		return resp.status(e.statusCode).json(e);
 	}
 });
 
 MemberRouter.patch('', async (req, resp) => {
 
 	console.log('PATCH REQUEST RECEIVED AT /members');
-	console.log(req.body);
 	try {
 		let updMember = await memberServ.updateMember(req.body);
 		return resp.status(200).json(updMember);
 	} catch (e) {
-		return resp.status(400).json(e);
+		return resp.status(e.statusCode).json(e);
 	}
 
 });
@@ -59,7 +56,7 @@ MemberRouter.delete('', async (req, resp) => {
 		let delMember = await memberServ.deleteMemberById(req.body.member_id);
 		return resp.status(204).json(delMember);
 	} catch (e) {
-		return resp.status(400).json(e);
+		return resp.status(e.statusCode).json(e);
 	}
 
 });

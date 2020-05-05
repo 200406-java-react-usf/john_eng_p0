@@ -5,7 +5,6 @@ import { Event } from '../models/event';
 import { PoolClient } from 'pg';
 import { connectionPool } from '..';
 import { mapEventResultSet } from '../util/result-set-mapper';
-
 import { InternalServerError } from '../errors/errors';
 
 export class EventRepository implements CrudRepository<Event>{
@@ -16,12 +15,10 @@ export class EventRepository implements CrudRepository<Event>{
 		let client:PoolClient;
 		try{
 			client = await connectionPool.connect();
-			console.log(client);
 			let sql = 'select * from app_events';
 			let rs = await client.query(sql);
 			return rs.rows.map(mapEventResultSet);
 		}catch(e){
-			console.log(e);
 			throw new InternalServerError();
 		}finally{
 			client && client.release;
@@ -52,7 +49,6 @@ export class EventRepository implements CrudRepository<Event>{
 			let rs = await client.query(sql, [val]);
 			return mapEventResultSet(rs.rows[0]);
 		} catch (e) {
-			console.log(e);
 			throw new InternalServerError();
 		} finally {
 			client && client.release();
@@ -66,7 +62,10 @@ export class EventRepository implements CrudRepository<Event>{
 			let sql = `insert into app_events(title, time_begin, time_end, notes, address_id, host_id) values
 			('${newObj.title}', '${newObj.time_begin}', '${newObj.time_end}', '${newObj.notes}', '${newObj.address_id}', '${newObj.host_id}')`;
 			await client.query(sql);
-			return await this.getByUniqueKey('title', newObj.title);
+			let sql2 = 'SELECT * FROM app_events WHERE event_id=(SELECT max(event_id) FROM app_events)';
+			let rs = await client.query(sql2);
+			console.log(rs);
+			return mapEventResultSet(rs.rows[0]);
 
 		}catch(e){
 			throw new InternalServerError();

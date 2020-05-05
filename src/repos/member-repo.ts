@@ -5,6 +5,7 @@ import { Member } from '../models/member';
 import { PoolClient } from 'pg';
 import { connectionPool } from '..';
 import { mapMemberResultSet } from '../util/result-set-mapper';
+import { InternalServerError } from '../errors/errors';
 
 export class MemberRepository implements CrudRepository<Member>{
 
@@ -19,7 +20,7 @@ export class MemberRepository implements CrudRepository<Member>{
 			let rs = await client.query(sql);
 			return rs.rows.map(mapMemberResultSet);
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 
@@ -35,7 +36,7 @@ export class MemberRepository implements CrudRepository<Member>{
 			let rs = await client.query(sql, [id]);
 			return mapMemberResultSet(rs.rows[0]);
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}
@@ -52,7 +53,7 @@ export class MemberRepository implements CrudRepository<Member>{
 			return mapMemberResultSet(rs.rows[0]);
 		} catch (e) {
 			console.log(e);
-			// throw new InternalServerError();
+			throw new InternalServerError();
 		} finally {
 			client && client.release();
 		}		
@@ -64,10 +65,12 @@ export class MemberRepository implements CrudRepository<Member>{
 			client = await connectionPool.connect();
 			let sql = `insert into app_members(first_name, last_name, biography, email, telephone) values
 			('${newObj.first_name}', '${newObj.last_name}', '${newObj.biography}', '${newObj.email}', '${newObj.telephone}')`;
-			let rs = await client.query(sql);
-			return mapMemberResultSet(rs.rows[0]);  //make getByUniqueKey
+			await client.query(sql);
+			let sql2 = 'SELECT * FROM app_events WHERE member_id=(SELECT max(member_id) FROM app_members)';
+			let rs = await client.query(sql2);
+			return mapMemberResultSet(rs.rows[0]);
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}
@@ -79,12 +82,11 @@ export class MemberRepository implements CrudRepository<Member>{
 			let sql = 	`update app_members 
 						set first_name = '${updObj.first_name}', last_name = '${updObj.last_name}', biography = '${updObj.biography}', email = '${updObj.email}', telephone = '${updObj.telephone}'
 						where member_id = $1`;
-			console.log(sql);
-			let rs = await client.query(sql, [updObj.member_id]);
+			
+			await client.query(sql, [updObj.member_id]);
 			return true;
-
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}
@@ -98,7 +100,7 @@ export class MemberRepository implements CrudRepository<Member>{
 			let rs = await client.query(sql, [id]);
 			return true;
 		}catch(e){
-			console.log(e);
+			throw new InternalServerError();
 		}finally{
 			client && client.release;
 		}

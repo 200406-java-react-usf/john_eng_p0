@@ -42,19 +42,24 @@ export class EventService{
 			throw new BadRequestError('Invalid property values found in provided user.');
 
 		let result = await this.eventRepo.save(newObj);
+
 		return result;
 	}
 
 	async updateEvent(updObj: Event) : Promise<boolean> {
-		if(!isValidObject(updObj))
-			throw new BadRequestError('Invalid user provided (invalid value found).');
+
+		if(!isValidObject(updObj)){
+			throw new BadRequestError('Invalid event provided (invalid value found).');
+		}	
 		let result = await this.eventRepo.update(updObj);
 		return result;
 	}
 
 	async deleteEventById(id: number) : Promise<boolean> {
+
 		if(!isValidId(id))
 			throw new BadRequestError();
+
 		let result = await this.eventRepo.deleteById(id);
 		return result;
 	}
