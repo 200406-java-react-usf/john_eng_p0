@@ -1,11 +1,12 @@
 import express from 'express';
 import AppConfig from '../config/app';
+import { adminGuard } from '../middleware/auth-middleware';
 
 export const ItemRouter = express.Router(); 
 
 const itemServ = AppConfig.itemServ;
 
-ItemRouter.get('', async (req, resp)=> {
+ItemRouter.get('', adminGuard, async (req, resp)=> {
 	try{
 		let payload = await itemServ.getAllItem();
 		resp.status(200).json(payload);

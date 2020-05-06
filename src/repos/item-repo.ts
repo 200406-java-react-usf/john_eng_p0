@@ -14,10 +14,8 @@ export class ItemRepository implements CrudRepository<Item>{
 		let client:PoolClient;
 		try{
 			client = await connectionPool.connect();
-			console.log(client);
 			let sql = 'select * from app_items';
 			let rs = await client.query(sql);
-			console.log(rs.rows);
 			return rs.rows.map(mapItemResultSet);
 		}catch(e){
 			throw new InternalServerError();

@@ -4,8 +4,8 @@ import { isValidId,
 	isValidStrings, 
 	isValidObject, 
 	isPropertyOf, 
-	isEmptyObject } from '../util/validator'
-import { ResourceNotFoundError, BadRequestError } from '../errors/errors';
+	isEmptyObject } from '../util/validator';
+import { ResourceNotFoundError, BadRequestError, AuthenticationError } from '../errors/errors';
 
 export class MemberService{
 
@@ -18,9 +18,9 @@ export class MemberService{
 		let result = await this.memberRepo.getAll();
 
 		if(isEmptyObject(result))
-			throw new ResourceNotFoundError()
+			throw new ResourceNotFoundError();
 
-		return result;
+		return result.map(this.removePassword);
 	}
 	async getMemberById(id: number) : Promise<Member> {
 
@@ -32,7 +32,7 @@ export class MemberService{
 		if(isEmptyObject(result))
 			throw new ResourceNotFoundError();
 
-		return result;
+		return this.removePassword(result);
 	}
 
 	async saveMember(newObj: Member) : Promise<Member> {
@@ -42,7 +42,7 @@ export class MemberService{
 
 		let result = await this.memberRepo.save(newObj);
 
-		return result;
+		return this.removePassword(result);
 	}
 
 	async updateMember(updObj: Member) : Promise<boolean> {
@@ -63,6 +63,38 @@ export class MemberService{
 		let result = await this.memberRepo.deleteById(id);
 
 		return result;
+	}
+
+	async authenticateMember(un: string, pw: string): Promise<Member> {
+
+		try {
+
+			if (!isValidStrings(un, pw)) {
+				throw new BadRequestError();
+			}
+
+			let authMember: Member;
+			
+			authMember = await this.memberRepo.getMemberByCredentials(un, pw);
+		
+
+			if (isEmptyObject(authMember)) {
+				throw new AuthenticationError('Bad credentials provided.');
+			}
+
+			return this.removePassword(authMember);
+
+		} catch (e) {
+			throw e;
+		}
+
+	}
+	
+	private removePassword(member: Member): Member {
+		if(!member || !member.password) return member;
+		let usr = {...member};
+		delete usr.password;
+		return usr;   
 	}
 
 }

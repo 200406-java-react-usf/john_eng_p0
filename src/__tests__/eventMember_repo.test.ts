@@ -1,7 +1,7 @@
-import { EventRepository } from '../repos/event-repo';
+import { EventMemberRepository } from '../repos/eventMember-repo';
 import * as mockIndex from '..';
 import * as mockMapper from '../util/result-set-mapper';
-import { Event } from '../models/event';
+import { EventMember } from '../models/eventMember';
 
 /*
 	We need to mock the connectionPool exported from the main module
@@ -20,13 +20,13 @@ jest.mock('..', ()=>{
 
 jest.mock('../util/result-set-mapper', () => {
 	return {
-		mapEventResultSet: jest.fn()
+		mapEventMemberResultSet: jest.fn()
 	};
 });
 
-describe('userRepo', () => {
+describe('eventMemberRepo', () => {
 
-	let sut = new EventRepository();
+	let sut = new EventMemberRepository();
 	let mockConnect = mockIndex.connectionPool.connect;
 
 	beforeEach(() => {
@@ -43,13 +43,7 @@ describe('userRepo', () => {
 						rows: [
 							{
 								event_id: 1,
-								title: 'Happy Thanksgiving',
-								time_begin: new Date(),
-								time_end: new Date(),
-								notes: 'Welcome all.  Bring some food to share.',
-								address_id: 1,
-								host_id: 2
-
+								member_id: 1
 							}
 						]
 				   };
@@ -57,18 +51,18 @@ describe('userRepo', () => {
 			   release: jest.fn()
 		   };
 	   });
-		(mockMapper.mapEventResultSet as jest.Mock).mockClear();
+		(mockMapper.mapEventMemberResultSet as jest.Mock).mockClear();
 
 	});
 
 
-	test('should resolve to an array of Events when getAll retrieves records from data source', async () => {
+	test('should resolve to an array of EventMembers when getAll retrieves records from data source', async () => {
 			
 		// Arrange
 		expect.hasAssertions();
 
-		let mockEvent = new Event(1, 'title', new Date(), new Date(), 'note', 1, 1);
-		(mockMapper.mapEventResultSet as jest.Mock).mockReturnValue(mockEvent);
+		let mockEventMember = new EventMember(1,1);
+		(mockMapper.mapEventMemberResultSet as jest.Mock).mockReturnValue(mockEventMember);
 
 		// Act
 		let result = await sut.getAll();
@@ -103,20 +97,20 @@ describe('userRepo', () => {
 
 	});
 
-	test('should resolve to a Event object when getById retrieves a record from data source', async () => {
+	test('should resolve to a EventMember object when getById retrieves a record from data source', async () => {
 
 		// Arrange
 		expect.hasAssertions();
 
-		let mockEvent = new Event(1, 'title', new Date(), new Date(), 'note', 1, 1);
-		(mockMapper.mapEventResultSet as jest.Mock).mockReturnValue(mockEvent);
+		let mockEventMember = new EventMember(1, 1);
+		(mockMapper.mapEventMemberResultSet as jest.Mock).mockReturnValue(mockEventMember);
 
 		// Act
 		let result = await sut.getById(1);
 
 		// Assert
 		expect(result).toBeTruthy();
-		expect(result instanceof Event).toBe(true);
+		expect(result[0] instanceof EventMember).toBe(true); // is result an EventMember
 
 	});
 
@@ -126,34 +120,36 @@ describe('userRepo', () => {
 		expect.hasAssertions();
 		(mockConnect as jest.Mock).mockImplementation(() => {
 			return {
-				query: jest.fn().mockImplementation(() => { return { rows: {} }; }), 
+				query: jest.fn().mockImplementation(() => { return { rows: [] }; }), 
 				release: jest.fn()
 			};
 		});
 
 		// Act
 		let result = await sut.getById(1);
-
+		
 		// Assert
 		expect(result).toBeTruthy();
-		expect(result instanceof Event).toBe(true);
+		expect(result instanceof Array).toBe(true);
+		expect(result.length).toBe(0);
+		expect(mockConnect).toBeCalledTimes(1);
 
 	});
 
-	test('should resolve to a Event object when getByUniqueKey retrieves a record from data source', async () => {
+	test('should resolve to a EventMember object when getByUniqueKey retrieves a record from data source', async () => {
 
 		// Arrange
 		expect.hasAssertions();
 
-		let mockEvent = new Event(1, 'title', new Date(), new Date(), 'note', 1, 1);
-		(mockMapper.mapEventResultSet as jest.Mock).mockReturnValue(mockEvent);
+		let mockEventMember = new EventMember(1, 1);
+		(mockMapper.mapEventMemberResultSet as jest.Mock).mockReturnValue(mockEventMember);
 
 		// Act
-		let result = await sut.getByUniqueKey('event_id', '1');
+		let result = await sut.getByUniqueKey('eventMember_id', '1');
 
 		// Assert
 		expect(result).toBeTruthy();
-		expect(result instanceof Event).toBe(true);
+		expect(result instanceof EventMember).toBe(true);
 
 	});
 
@@ -169,33 +165,33 @@ describe('userRepo', () => {
 		});
 
 		// Act
-		let result = await sut.getByUniqueKey('event_id','1');
+		let result = await sut.getByUniqueKey('eventMember_id','1');
 
 		// Assert
 		expect(result).toBeTruthy();
-		expect(result instanceof Event).toBe(true);
+		expect(result instanceof EventMember).toBe(true);
 
 	});
 
-	test('should resolve to a Event object when save() insert a record from data source', async () => {
+	test('should resolve to a EventMember object when save() insert a record from data source', async () => {
 
 		// Arrange
 		expect.hasAssertions();
 
-		let mockEvent = new Event(1, 'title', new Date(), new Date(), 'note', 1, 1);
+		let mockEventMember = new EventMember(1, 1);
 		(mockConnect as jest.Mock).mockImplementation(() => {
 			return {
-				query: jest.fn().mockImplementation(() => { return { rows: mockEvent }; }), 
+				query: jest.fn().mockImplementation(() => { return { rows: mockEventMember }; }), 
 				release: jest.fn()
 			};
 		});
 
 		// Act
-		let result = await sut.save(mockEvent);
+		let result = await sut.save(mockEventMember);
 
 		// Assert
 		expect(result).toBeTruthy();
-		expect(result instanceof Event).toBe(true);
+		expect(result instanceof EventMember).toBe(true);
 
 	});
 
@@ -203,7 +199,7 @@ describe('userRepo', () => {
 		
 		// Arrange
 		expect.hasAssertions();
-		let mockEvent = new Event(1, 'title', new Date(), new Date(), 'note', 1, 1);
+		let mockEventMember = new EventMember(1, 1);
 		(mockConnect as jest.Mock).mockImplementation(() => {
 			return {
 				query: jest.fn().mockImplementation(() => { return { rows: {} }; }), 
@@ -212,14 +208,15 @@ describe('userRepo', () => {
 		});
 
 		// Act
-		let result = await sut.save(mockEvent);
+		let result = await sut.save(mockEventMember);
+
 		// Assert
 		expect(result).toBeTruthy();
-		expect(result instanceof Event).toBe(true);
+		expect(result instanceof EventMember).toBe(true);
 
 	});
 
-	test('should resolve to a Event object when deleteById() insert a record from data source', async () => {
+	test('should resolve to a EventMember object when deleteById() insert a record from data source', async () => {
 
 		// Arrange
 		expect.hasAssertions();
@@ -232,7 +229,7 @@ describe('userRepo', () => {
 		});
 
 		// Act
-		let result = await sut.deleteById(1);
+		let result = await sut.deleteById(1, 1);
 
 		// Assert
 		expect(result).toBeTruthy();
@@ -244,7 +241,7 @@ describe('userRepo', () => {
 		
 		// Arrange
 		expect.hasAssertions();
-		let mockEvent = new Event(1, 'title', new Date(), new Date(), 'note', 1, 1);
+		let mockEventMember = new EventMember(1, 1);
 		(mockConnect as jest.Mock).mockImplementation(() => {
 			return {
 				query: jest.fn().mockImplementation(() => { return { rows: {} }; }), 
@@ -253,7 +250,7 @@ describe('userRepo', () => {
 		});
 
 		// Act
-		let result = await sut.deleteById(1);
+		let result = await sut.deleteById(1, 1);
 		// Assert
 		expect(result).toBeTruthy();
 		expect(result).toBe(true);

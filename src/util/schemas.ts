@@ -10,11 +10,14 @@ export interface EventSchema {
 
 export interface MemberSchema{
 	member_id: number,
+	username: string,
+	password: string,
 	first_name: string,
 	last_name: string,
 	biography: string,
 	email: string,
-	telephone: string
+	telephone: string,
+	role: string
 }
 
 export interface AddressSchema{

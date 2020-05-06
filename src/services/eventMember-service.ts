@@ -1,10 +1,8 @@
 import { EventMemberRepository } from '../repos/eventMember-repo';
 import { EventMember } from '../models/eventMember';
 import { isValidId, 
-	isValidStrings, 
 	isValidObject, 
-	isPropertyOf, 
-	isEmptyObject } from '../util/validator'
+	isEmptyObject } from '../util/validator';
 import { ResourceNotFoundError, BadRequestError } from '../errors/errors';
 
 export class EventMemberService{
@@ -18,7 +16,7 @@ export class EventMemberService{
 		let result = await this.eventMemberRepo.getAll();
 
 		if(isEmptyObject(result))
-			throw new ResourceNotFoundError()
+			throw new ResourceNotFoundError();
 
 		return result;
 	}

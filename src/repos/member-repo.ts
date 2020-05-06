@@ -1,5 +1,4 @@
 import { CrudRepository } from './crud-repo';
-import memberData from '../data/member_db';
 import { Member } from '../models/member';
 
 import { PoolClient } from 'pg';
@@ -105,6 +104,30 @@ export class MemberRepository implements CrudRepository<Member>{
 			client && client.release;
 		}
 	}
+
+	async getMemberByCredentials(un: string, pw: string) {
+        
+		let client: PoolClient;
+
+		try {
+			client = await connectionPool.connect();
+			let sql = 'select * from app_members where username = $1 and password = $2';
+			let rs = await client.query(sql, [un, pw]);
+			return mapMemberResultSet(rs.rows[0]);
+		} catch (e) {
+			throw new InternalServerError();
+		} finally {
+			client && client.release();
+		}
+    
+	}
+
+
+
+
+
+
+
 }
 
 

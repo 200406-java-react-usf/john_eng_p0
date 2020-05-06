@@ -1,5 +1,4 @@
 import { CrudRepository } from './crud-repo';
-import eventData from '../data/event_db';
 import { Event } from '../models/event';
 
 import { PoolClient } from 'pg';
@@ -53,7 +52,7 @@ export class EventRepository implements CrudRepository<Event>{
 		} finally {
 			client && client.release();
 		}		
-}
+	}
 
 	async save(newObj: Event): Promise<Event>{
 		let client: PoolClient;
@@ -64,7 +63,6 @@ export class EventRepository implements CrudRepository<Event>{
 			await client.query(sql);
 			let sql2 = 'SELECT * FROM app_events WHERE event_id=(SELECT max(event_id) FROM app_events)';
 			let rs = await client.query(sql2);
-			console.log(rs);
 			return mapEventResultSet(rs.rows[0]);
 
 		}catch(e){
@@ -81,10 +79,10 @@ export class EventRepository implements CrudRepository<Event>{
 			let sql = 	`update app_events 
 						set title = '${updObj.title}', time_begin = '${updObj.time_begin}', time_end = '${updObj.time_end}', notes = '${updObj.notes}', address_id = '${updObj.address_id}', host_id = '${updObj.host_id}'
 						where event_id = $1`;
-				await client.query(sql, [updObj.event_id]);
+			await client.query(sql, [updObj.event_id]);
 
 			// if(!isEmptyObject(await this.getById(updObj.event_id)))
-				return true;
+			return true;
 
 		}catch(e){
 			throw new InternalServerError();

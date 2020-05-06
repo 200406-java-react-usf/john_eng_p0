@@ -31,11 +31,14 @@ export function mapMemberResultSet(resultSet: MemberSchema): Member {
 	}
 	return new Member(
 		resultSet.member_id,
+		resultSet.username,
+		resultSet.password,
 		resultSet.first_name,
 		resultSet.last_name,
 		resultSet.biography,
 		resultSet.email,
-		resultSet.telephone
+		resultSet.telephone,
+		resultSet.role
 	);
 }
 export function mapAddressResultSet(resultSet: AddressSchema): Address {

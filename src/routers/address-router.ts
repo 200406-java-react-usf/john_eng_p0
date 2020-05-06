@@ -1,11 +1,12 @@
 import express from 'express';
 import AppConfig from '../config/app';
+import { adminGuard } from '../middleware/auth-middleware';
 
 export const AddressRouter = express.Router(); 
 
 const addressServ = AppConfig.addressServ;
 
-AddressRouter.get('', async (req, resp)=> {
+AddressRouter.get('', adminGuard, async (req, resp)=> {
 	try{
 		let payload = await addressServ.getAllAddress();
 		resp.status(200).json(payload);

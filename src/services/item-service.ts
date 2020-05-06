@@ -4,7 +4,7 @@ import { isValidId,
 	isValidStrings, 
 	isValidObject, 
 	isPropertyOf, 
-	isEmptyObject } from '../util/validator'
+	isEmptyObject } from '../util/validator';
 import { ResourceNotFoundError, BadRequestError } from '../errors/errors';
 
 export class ItemService{
@@ -19,7 +19,7 @@ export class ItemService{
 		let result = await this.itemRepo.getAll();
 
 		if(isEmptyObject(result))
-			throw new ResourceNotFoundError()
+			throw new ResourceNotFoundError();
 
 		return result;
 

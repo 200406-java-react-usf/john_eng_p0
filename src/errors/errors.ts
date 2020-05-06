@@ -50,10 +50,28 @@ class NotImplementedError extends ApplicationError {
 }
 class InternalServerError extends ApplicationError {
 
-    constructor(reason?: string) {
-        super(500, reason);
-        super.setMessage('An unexpected error occurred.');
-    }
+	constructor(reason?: string) {
+		super(500, reason);
+		super.setMessage('An unexpected error occurred.');
+	}
+
+}
+
+class AuthenticationError extends ApplicationError {
+
+	constructor(reason?: string) {
+		super(401, reason);
+		super.setMessage('Authentication failed.');
+	}
+
+}
+
+class AuthorizationError extends ApplicationError {
+
+	constructor(reason?: string) {
+		super(403, reason);
+		super.setMessage('You do not have permission to access this resource!');
+	}
 
 }
 
@@ -62,5 +80,7 @@ export{
 	ResourcePersistenceError,
 	BadRequestError,
 	NotImplementedError,
-	InternalServerError
+	InternalServerError, 
+	AuthenticationError,
+	AuthorizationError
 };

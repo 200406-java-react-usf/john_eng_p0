@@ -14,7 +14,6 @@ export class AddressRepository implements CrudRepository<Address>{
 		let client:PoolClient;
 		try{
 			client = await connectionPool.connect();
-			console.log(client);
 			let sql = 'select * from app_event_addresses';
 			let rs = await client.query(sql);
 			return rs.rows.map(mapAddressResultSet);
@@ -39,20 +38,20 @@ export class AddressRepository implements CrudRepository<Address>{
 		}
 	}
 
-		async getByUniqueKey(key: string, val: string): Promise<Address> {
+	async getByUniqueKey(key: string, val: string): Promise<Address> {
 
-			let client: PoolClient;
+		let client: PoolClient;
 
-			try {
-				client = await connectionPool.connect();
-				let sql = `select * from app_event_addresses where ${key} = $1`;
-				let rs = await client.query(sql, [val]);
-				return mapAddressResultSet(rs.rows[0]);
-			} catch (e) {
-				throw new InternalServerError();
-			} finally {
-				client && client.release();
-			}		
+		try {
+			client = await connectionPool.connect();
+			let sql = `select * from app_event_addresses where ${key} = $1`;
+			let rs = await client.query(sql, [val]);
+			return mapAddressResultSet(rs.rows[0]);
+		} catch (e) {
+			throw new InternalServerError();
+		} finally {
+			client && client.release();
+		}		
 	}
 
 	async save(newObj: Address): Promise<Address>{

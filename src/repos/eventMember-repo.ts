@@ -14,7 +14,6 @@ export class EventMemberRepository implements CrudRepository<EventMember>{
 		let client:PoolClient;
 		try{
 			client = await connectionPool.connect();
-			console.log(client);
 			let sql = 'select * from app_events_members';
 			let rs = await client.query(sql);
 			return rs.rows.map(mapEventMemberResultSet);

@@ -6,7 +6,10 @@ import { AddressRouter } from './routers/address-router';
 import { ItemRouter } from './routers/item-router';
 import { EventMemberRouter } from './routers/eventMember-router';
 
+import { sessionMiddleware } from './middleware/session-middleware';
+import { corsFilter } from './middleware/cors-filter';
 import { Pool } from 'pg';
+import { AuthRouter } from './routers/auth-router';
 
 const app = express();
 
@@ -23,13 +26,15 @@ export const connectionPool: Pool = new Pool({
 	max: 5
 });
 
+app.use(sessionMiddleware);
+app.use(corsFilter);
 app.use('/', express.json());
-
 app.use('/events', EventRouter);
 app.use('/members', MemberRouter);
 app.use('/addresses', AddressRouter);
 app.use('/items', ItemRouter);
 app.use('/events_members', EventMemberRouter);
+app.use('/auth', AuthRouter);
 
 
 app.listen(8000, ()=> {

@@ -1,11 +1,12 @@
 import express from 'express';
 import AppConfig from '../config/app';
+import { adminGuard } from '../middleware/auth-middleware';
 
 export const EventMemberRouter = express.Router(); 
 
 const eventMemberServ = AppConfig.eventMemberServ;
 
-EventMemberRouter.get('', async (req, resp)=> {
+EventMemberRouter.get('', adminGuard, async (req, resp)=> {
 	try{
 		let payload = await eventMemberServ.getAllEventMember();
 		resp.status(200).json(payload);

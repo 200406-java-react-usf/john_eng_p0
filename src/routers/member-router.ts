@@ -1,11 +1,12 @@
 import express from 'express';
 import AppConfig from '../config/app';
+import { adminGuard } from '../middleware/auth-middleware';
 
 export const MemberRouter = express.Router(); 
 
 const memberServ = AppConfig.memberServ;
 
-MemberRouter.get('', async (req, resp)=> {
+MemberRouter.get('', adminGuard, async (req, resp)=> {
 	try{
 		let payload = await memberServ.getAllMember();
 		resp.status(200).json(payload);

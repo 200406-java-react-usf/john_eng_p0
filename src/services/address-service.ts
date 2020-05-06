@@ -1,10 +1,8 @@
 import { Address } from '../models/address';
 import { AddressRepository } from '../repos/address-repo';
 import { isValidId, 
-	isValidStrings, 
 	isValidObject, 
-	isPropertyOf, 
-	isEmptyObject } from '../util/validator'
+	isEmptyObject } from '../util/validator';
 import { ResourceNotFoundError, BadRequestError } from '../errors/errors';
 
 export class AddressService{
@@ -18,7 +16,7 @@ export class AddressService{
 		let result = await this.addressRepo.getAll();
 		
 		if(isEmptyObject(result))
-			throw new ResourceNotFoundError()
+			throw new ResourceNotFoundError();
 
 		return result;
 

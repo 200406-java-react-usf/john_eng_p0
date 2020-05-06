@@ -1,11 +1,11 @@
-import { EventService } from '../services/event-service';
-import { Event } from '../models/event';
+import { AddressService } from '../services/address-service';
+import { Address } from '../models/address';
 import { ResourceNotFoundError, BadRequestError } from '../errors/errors';
 
 
-jest.mock('../repos/event-repo', () => {
+jest.mock('../repos/address-repo', () => {
 	
-	return new class EventRepository{
+	return new class AddressRepository{
 		getAll = jest.fn();
 		getById = jest.fn() 
 		getByUniqueKey = jest.fn()
@@ -16,16 +16,15 @@ jest.mock('../repos/event-repo', () => {
 });
 
 
-describe('eventService', () =>{
+describe('addressService', () =>{
 
-	let sut: EventService;
+	let sut: AddressService;
 	let mockRepo;
 
-	let mockEvents = [
-		new Event(1, 'Harr\'s Birthday Party', new Date(), new Date(), 'Looking forward to see you all', 1, 1),
-		new Event(2, 'Christmas Pary', new Date(), new Date(), 'Bring a present.  We are doing secret santa.', 2, 2),
-		new Event(3, 'Happy Halloween Party', new Date(), new Date(), 'Don\'t forget your Custome', 1, 3)
-
+	let mockAddresss = [
+		new Address(1, '123 Adam St.',  'New York',  'NY', '10002'),
+		new Address(2, '555 Mary St.',  'Brooklyn',  'NY', '10202'),
+		new Address(3, '149 Ramblewood Street',  'Carmel',  'NY', '10512')
 	];
 
 	beforeEach(()=> {
@@ -42,22 +41,22 @@ describe('eventService', () =>{
 		});
 		
 		//@ts-ignore
-		sut = new EventService(mockRepo);
+		sut = new AddressService(mockRepo);
 
 	});
 	
-	test('to return all events when getAllEvent() is called', async () => {
+	test('to return all addresss when getAllAddress() is called', async () => {
 	//Arrange
 		expect.assertions(2);
-		mockRepo.getAll = jest.fn().mockReturnValue(mockEvents);
+		mockRepo.getAll = jest.fn().mockReturnValue(mockAddresss);
 		//Act
-		let result = await sut.getAllEvent();
+		let result = await sut.getAllAddress();
 		//Assert
 		expect(result).toBeTruthy();
 		expect(result.length).toBe(3);
 	});
 
-	test('should reject with ResourceNotFoundError when getAllEvent fails to get any event from the data source', async () => {
+	test('should reject with ResourceNotFoundError when getAllAddress fails to get any address from the data source', async () => {
 
 		// Arrange
 		expect.assertions(1);
@@ -65,7 +64,7 @@ describe('eventService', () =>{
 
 		// Act
 		try {
-			await sut.getAllEvent();
+			await sut.getAllAddress();
 		} catch (e) {
 
 			// Assert
@@ -75,20 +74,20 @@ describe('eventService', () =>{
 	});
 
 
-	test('should resolve to Event when getByEventId() is given the correct id', async () => {
+	test('should resolve to Address when getByAddressId() is given the correct id', async () => {
 	//Arrange
 		expect.assertions(2);
 		mockRepo.getById = jest.fn().mockImplementation((id: number) => {
-			return new Promise<Event>((resolve) => resolve(mockEvents[id - 1]));
+			return new Promise<Address>((resolve) => resolve(mockAddresss[id - 1]));
 		});
 		//Act
-		let result = await sut.getEventById(1);
+		let result = await sut.getAddressById(1);
 		//Assert
 		expect(result).toBeTruthy();
-		expect(result.event_id).toBe(1);
+		expect(result.address_id).toBe(1);
 	});
 
-	test('should reject with BadRequestError when getEventById is given a invalid value as an event_id (decimal)', async () => {
+	test('should reject with BadRequestError when getAddressById is given a invalid value as an address_id (decimal)', async () => {
 
 		// Arrange
 		expect.hasAssertions();
@@ -96,7 +95,7 @@ describe('eventService', () =>{
 
 		// Act
 		try {
-			await sut.getEventById(3.14);
+			await sut.getAddressById(3.14);
 		} catch (e) {
 
 			// Assert
@@ -105,7 +104,7 @@ describe('eventService', () =>{
 
 	});
 
-	test('should reject with BadRequestError when getEventById is given a invalid value as an event_id (zero)', async () => {
+	test('should reject with BadRequestError when getAddressById is given a invalid value as an address_id (zero)', async () => {
 
 		// Arrange
 		expect.hasAssertions();
@@ -113,7 +112,7 @@ describe('eventService', () =>{
 
 		// Act
 		try {
-			await sut.getEventById(0);
+			await sut.getAddressById(0);
 		} catch (e) {
 
 			// Assert
@@ -122,7 +121,7 @@ describe('eventService', () =>{
 
 	});
 
-	test('should reject with BadRequestError when getEventById is given a invalid value as an event_id (NaN)', async () => {
+	test('should reject with BadRequestError when getAddressById is given a invalid value as an address_id (NaN)', async () => {
 
 		// Arrange
 		expect.hasAssertions();
@@ -130,7 +129,7 @@ describe('eventService', () =>{
 
 		// Act
 		try {
-			await sut.getEventById(NaN);
+			await sut.getAddressById(NaN);
 		} catch (e) {
 
 			// Assert
@@ -139,7 +138,7 @@ describe('eventService', () =>{
 
 	});
 
-	test('should reject with BadRequestError when getEventById is given a invalid value as an event_id (negative)', async () => {
+	test('should reject with BadRequestError when getAddressById is given a invalid value as an address_id (negative)', async () => {
 
 		// Arrange
 		expect.hasAssertions();
@@ -147,7 +146,7 @@ describe('eventService', () =>{
 
 		// Act
 		try {
-			await sut.getEventById(-2);
+			await sut.getAddressById(-2);
 		} catch (e) {
 
 			// Assert
@@ -156,7 +155,7 @@ describe('eventService', () =>{
 
 	});
 
-	test('should reject with ResourceNotFoundError if getEventByid is given an unknown Event_id', async () => {
+	test('should reject with ResourceNotFoundError if getAddressByid is given an unknown Address_id', async () => {
 
 		// Arrange
 		expect.hasAssertions();
@@ -164,7 +163,7 @@ describe('eventService', () =>{
 
 		// Act
 		try {
-			await sut.getEventById(9999);
+			await sut.getAddressById(9999);
 		} catch (e) {
 
 			// Assert
@@ -173,30 +172,30 @@ describe('eventService', () =>{
 
 	});
 	
-	test('should resolve to Event when saveEvent() is called with correct newObj', async () =>{
+	test('should resolve to Address when saveAddress() is called with correct newObj', async () =>{
 		//Arrange
 		expect.assertions(2);
-		let newObj = new Event(1, 'Happy Halloween Party', new Date(), new Date(), 'Don\'t forget your Custome', 1, 3);
+		let newObj = new Address(1, '123 Adam St.',  'New York',  'NY', '10002');
 		mockRepo.save = jest.fn().mockImplementation(async (newObj) => {
 			return newObj;});
 		//Act
-		let result = await sut.saveEvent(newObj);
+		let result = await sut.saveAddress(newObj);
 		//Assert
 		expect(result).toBeTruthy();
-		expect(result.title).toEqual('Happy Halloween Party');
+		expect(result.street).toEqual('123 Adam St.');
 	});
 
 
-	test('should resolve to BadRequestError when saveEvent() is called with incorrect newObj', async () => {
+	test('should resolve to BadRequestError when saveAddress() is called with incorrect newObj', async () => {
 
 		// Arrange
 		expect.hasAssertions();
 		mockRepo.save = jest.fn().mockReturnValue(false);
-		let newObj = new Event(1, '', new Date(), new Date(), 'Don\'t forget your Custome', 1, 3);
+		let newObj = new Address(1, '',  'New York',  'NY', '10002');
 
 		// Act
 		try {
-			await sut.saveEvent(newObj);
+			await sut.saveAddress(newObj);
 		} catch (e) {
 
 			// Assert
@@ -206,29 +205,29 @@ describe('eventService', () =>{
 	});
 
 
-	test('should resolve to Event when updateEvent() is called with correct newObj', async ()=>{
+	test('should resolve to Address when updateAddress() is called with correct newObj', async ()=>{
 		//Arrange
 		expect.assertions(2);
-		let updObj = new Event(1, 'Happ Halloween Party', new Date(), new Date(), 'Don\'t forget your Custome', 1, 3);
+		let updObj = new Address(1, '123 Adam St.',  'New York',  'NY', '10002');
 		mockRepo.update = jest.fn().mockReturnValue(true);
 		//Act
-		let result1 = await sut.updateEvent(updObj);
+		let result1 = await sut.updateAddress(updObj);
 		//Assert
 		expect(result1).toBeTruthy();
 		expect(result1).toBe(true);
 
 	});
 
-	test('should resolve to BadRequestError when updateEvent() is called with incorrect newObj', async () => {
+	test('should resolve to BadRequestError when updateAddress() is called with incorrect newObj', async () => {
 
 		// Arrange
 		expect.hasAssertions();
 		mockRepo.update = jest.fn().mockReturnValue(false);
-		let updObj = new Event(1, '', new Date(), new Date(), 'Don\'t forget your Custome', 1, 3);
+		let updObj = new Address(1, '',  'New York',  'NY', '10002');
 
 		// Act
 		try {
-			await sut.updateEvent(updObj);
+			await sut.updateAddress(updObj);
 		} catch (e) {
 
 			// Assert
@@ -237,12 +236,12 @@ describe('eventService', () =>{
 
 	});
 
-	test('should delete an event when deleteById() is called', async () =>{
+	test('should delete an address when deleteById() is called', async () =>{
 		//Arrange
 		expect.assertions(1);
 		mockRepo.deleteById = jest.fn().mockReturnValue(true);
 		//Act
-		let result1 = await sut.deleteEventById(2);
+		let result1 = await sut.deleteAddressById(2);
 
 		//Assert
 		expect(result1).toBe(true);
@@ -254,7 +253,7 @@ describe('eventService', () =>{
 		mockRepo.deleteById = jest.fn().mockReturnValue(false);
 		//Act
 		try{
-			await sut.deleteEventById(-2);
+			await sut.deleteAddressById(-2);
 		}catch(e){
 		//Assert
 			expect(e instanceof BadRequestError).toBe(true);
