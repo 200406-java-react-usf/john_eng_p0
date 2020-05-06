@@ -1,14 +1,13 @@
 # Project 0
 Event API
 
-Have you ever been in a event where you check to see who was hosting it, where is it, how many people in the event, and who is bring what. Probably yes!
-Well, you have find the right API to make it easier to keep track of things.  This api will store the events, event address members, event members and items bring to the events.
+Have you ever, before you attend an event, you would check for information like who was hosting it, where is it, how many people will be attending, and probably what do people bring if it is a potluck.
+Well, you have find the right API to make it easier to help keep track of events.  
 
-
-What is the benefit of this API?
-1) It provides information about the party such as time begin, time end, title, hosting person and address.
+What are some benefit of this API?
+1) It provides information about the event such as time begin, time end, title, hosting person and address.
 2) It provides information about who are joining the event.
-3) It provides information about items that members bring to the event.
+3) It provides information about items that members will bring to the event.
 
 
 ## ERD
